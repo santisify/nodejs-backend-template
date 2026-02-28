@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
-import {rateLimit} from 'express-rate-limit';
+import { rateLimit } from 'express-rate-limit';
 import routers from './routes/index.js';
-import {pinoHttpMiddleware} from "./utils/logger.helper.js";
+import { pinoHttpMiddleware } from "./utils/logger.helper.js";
 
 const limiter = rateLimit({
   windowMs: 1000, limit: 10, standardHeaders: 'draft-8', legacyHeaders: false
@@ -26,7 +26,12 @@ app.use(limiter);
 // });
 
 app.use(pinoHttpMiddleware);
-
 app.use('/v1', routers);
+
+//自定义错误处理中间件
+app.use((err, _req, res, _next) => {
+  const { name = 'Unknon Error', message = 'Something broken!', statusCode = 500 } = err;
+  res.status(statusCode).send(name + ':' + message);
+});
 
 export default app;
