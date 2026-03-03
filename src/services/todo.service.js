@@ -1,23 +1,20 @@
 import {Op} from 'sequelize';
 import Todo from '../models/todo.model.js';
+import sequelize from '../utils/db.helper.js';
 
 export async function getAllTodos(offset, limit = 5, search) {
   let titleFilter = {};
 
   if (search) {
     titleFilter = {
-      where: {
-        title: {
-          [Op.like]: `%${search}%`,
-        },
-      },
+      where: sequelize.where(sequelize.fn('lower', sequelize.col('title')), {
+        [Op.like]: `%${search.toLowerCase()}%`,
+      }),
     };
   }
 
   const todos = await Todo.findAll({
-    offset,
-    limit,
-    ...titleFilter,
+    offset, limit, ...titleFilter,
   });
 
   return todos;
@@ -30,11 +27,13 @@ export async function getTodoById(todoId) {
 }
 
 export async function deleteTodoById(todoId) {
-  await Todo.destroy({
+  const deletedTodoNumber = await Todo.destroy({
     where: {
       id: todoId,
     },
   });
+
+  return deletedTodoNumber;
 }
 
 export async function createTodo(addTodo) {
@@ -44,11 +43,13 @@ export async function createTodo(addTodo) {
 }
 
 export async function updateTodo(updateTodo) {
-  await Todo.update(updateTodo, {
+  const updatedTodoEffect = await Todo.update(updateTodo, {
     where: {
       id: updateTodo.id,
     },
   });
+
+  return updatedTodoEffect[0];
 }
 
 export async function countTodo(search) {
@@ -56,11 +57,9 @@ export async function countTodo(search) {
 
   if (search) {
     titleFilter = {
-      where: {
-        title: {
-          [Op.like]: `%${search}%`,
-        },
-      },
+      where: sequelize.where(sequelize.fn('lower', sequelize.col('title')), {
+        [Op.like]: `%${search.toLowerCase()}%`,
+      }),
     };
   }
 

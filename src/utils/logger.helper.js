@@ -3,18 +3,24 @@ import pinoHttp from 'pino-http';
 
 const transport = pino.transport({
   targets: [{
-    //
-    level: 'trace', target: 'pino/file', options: {
+    //所有日志配置
+    level: 'trace',
+    target: 'pino/file',
+    options: {
       mkdir: true, destination: './logs/all-logs.log',
     }
   }, {
     //错误日志配置
-    level: 'error', target: 'pino/file', options: {
+    level: 'error',
+    target: 'pino/file',
+    options: {
       mkdir: true, destination: './logs/error.log',
     }
   }, {
     //终端日志配置
-    level: 'info', target: 'pino-pretty', options: {
+    level: 'info',
+    target: 'pino-pretty',
+    options: {
       colorize: true,
     }
   }]
@@ -22,8 +28,7 @@ const transport = pino.transport({
 
 export const logger = pino(transport);
 export const pinoHttpMiddleware = pinoHttp({
-  logger,
-  // serializers: { //request body日志显示，可能存在安全问题
+  logger, // serializers: { //request body日志显示，可能存在安全问题
   //   req(req) {
   //     req.body = req.raw.body;
   //     return req;
