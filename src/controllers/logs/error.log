@@ -1,0 +1,1 @@
+{"level":50,"time":1772540789255,"pid":26100,"hostname":"ubuntu","msg":"Unable to connect to the database: connect ECONNREFUSED 127.0.0.1:5432"}

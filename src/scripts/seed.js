@@ -1,6 +1,7 @@
-import { readFile } from 'node:fs/promises';
+import {readFile} from 'node:fs/promises';
 import sequelize from '../utils/db.helper.js';
 import Todo from '../models/todo.model.js';
+import User from "../models/user.model.js";
 
 try {
   // Read initialize data
@@ -15,8 +16,8 @@ try {
   // await sequelize.authenticate();
 
   // Sync database
-  await Todo.sync({ force: true });
-
+  await Todo.sync({force: true});
+  await User.sync({force: true});
   // Insert data
   const todos = await Todo.bulkCreate(initializeTodos);
   console.log(JSON.stringify(todos, null, 2));
