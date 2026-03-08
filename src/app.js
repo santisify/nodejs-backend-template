@@ -15,14 +15,14 @@ app.use(RateLimiter);
 app.use(pinoHttpMiddleware);
 app.use('/v1', userRoute);
 
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   const authorization = req.headers.authorization;
   if (!authorization) {
     return res.status(401).json({message: 'Unauthorized'});
   }
 
   const token = authorization.split(' ')[1];
-  verifyToken(token);
+  await verifyToken(token);
   next();
 });
 

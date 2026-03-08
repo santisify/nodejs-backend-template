@@ -4,7 +4,6 @@ import {
 } from "../services/user.service.js";
 import AppError from "../utils/AppError.js";
 import {sendJsonResponse, sendSuccessResponse} from "../utils/response.helper.js";
-import User from "../models/user.model.js";
 import {generateToken} from "../utils/JWT.helper.js";
 
 export async function createUser(req, res) {
@@ -13,7 +12,7 @@ export async function createUser(req, res) {
     throw AppError(`Email or password is required`, 400, `Bad request`);
   }
   const createdUser = await createUserApi(email, password);
-
+  
   return sendSuccessResponse(res, createdUser);
 }
 
@@ -27,7 +26,7 @@ export async function login(req, res) {
     return sendJsonResponse(res, 401, 'Unauthorized', result)
   }
 
-  const token = generateToken({email});
+  const token = await generateToken({email});
 
   return sendSuccessResponse(res, token)
 }
