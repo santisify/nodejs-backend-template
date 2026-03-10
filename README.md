@@ -1,6 +1,6 @@
 # Node.js 后端模板
 
-这是一个基于 Express.js 的 Node.js 后端项目模板，采用分层架构设计，内置了完整的 CRUD 示例功能。
+这是一个基于 Express.js 的 Node.js 后端项目模板，采用分层架构设计，内置了完整的 CRUD 示例功能、用户认证系统和 JWT 令牌管理。
 
 ## 技术栈
 
@@ -11,6 +11,8 @@
 - **Pino** - 高性能日志记录工具
 - **CORS** - 跨域资源共享支持
 - **Express Rate Limit** - API 速率限制
+- **jose** - JWT 令牌生成和验证
+- **bcrypt** - 密码加密
 
 ## 项目结构
 
@@ -18,17 +20,26 @@
 template/
 ├── src/
 │   ├── controllers/      # 控制器层 - 处理请求和响应
-│   │   └── todo.controller.js
+│   │   ├── todo.controller.js
+│   │   ├── user.controller.js
+│   │   └── logs/
 │   ├── models/           # 数据模型层 - 定义数据库表结构
-│   │   └── todo.model.js
+│   │   ├── todo.model.js
+│   │   └── user.model.js
 │   ├── routes/           # 路由层 - 定义 API 端点
-│   │   ├── index.js
-│   │   └── todo.route.js
+│   │   ├── todo.route.js
+│   │   └── user.route.js
 │   ├── services/         # 服务层 - 业务逻辑处理
-│   │   └── todo.service.js
+│   │   ├── todo.service.js
+│   │   └── user.service.js
 │   ├── utils/            # 工具函数
+│   │   ├── AppError.js
 │   │   ├── db.helper.js
-│   │   └── logger.helper.js
+│   │   ├── globalErrorHandler.js
+│   │   ├── JWT.helper.js
+│   │   ├── logger.helper.js
+│   │   ├── RateLimiter.js
+│   │   └── response.helper.js
 │   ├── scripts/          # 脚本文件
 │   │   ├── seed.js
 │   │   └── data/
@@ -129,6 +140,53 @@ GET /v1/todos/count
 查询参数：
 - `search` (可选): 搜索关键词
 
+### 用户认证接口
+
+#### 用户注册
+```
+POST /v1/users/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123",
+  "email": "test@example.com"
+}
+```
+
+#### 用户登录
+```
+POST /v1/users/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+```
+
+成功响应：
+```json
+{
+  "success": true,
+  "message": "登录成功",
+  "data": {
+    "user": {
+      "id": 1,
+      "username": "testuser",
+      "email": "test@example.com"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
+}
+```
+
+#### 获取用户信息（需要认证）
+```
+GET /v1/users/me
+Authorization: Bearer <your_jwt_token>
+```
+
 ## 功能特性
 
 - ✅ 分层架构（Controller-Service-Model）
@@ -140,6 +198,11 @@ GET /v1/todos/count
 - ✅ 分页查询
 - ✅ 搜索功能
 - ✅ 热重载开发模式
+- ✅ 用户注册和登录
+- ✅ JWT 令牌认证
+- ✅ 密码加密存储
+- ✅ 全局错误处理
+- ✅ 统一响应格式
 
 ## 日志
 
